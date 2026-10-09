@@ -1,19 +1,17 @@
 name: CI Pipeline
 
 on:
-push:
-branches: [ main ]
-workflow_dispatch:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
 
-
-steps:
-  - name: Descargar repositorio
-    uses: actions/checkout@v4
-
-  - name: Mostrar mensaje
-    run: echo "Pipeline CI/CD ejecutado correctamente"
+      - name: Mostrar mensaje
+        run: echo "Pipeline CI/CD ejecutado correctamente"
 
