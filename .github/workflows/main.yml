@@ -16,4 +16,4 @@ steps:
 
   - name: Mostrar mensaje
     run: echo "Pipeline CI/CD ejecutado correctamente"
-```
+
