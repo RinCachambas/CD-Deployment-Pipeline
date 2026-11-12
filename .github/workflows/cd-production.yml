@@ -1,0 +1,54 @@
+name: CD & Deployment Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Entorno de despliegue manual'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+concurrency:
+  group: deployment-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  quality-gate:
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      node-versions: '["20", "22"]'
+      run-lint: true
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: quality-gate
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Deploy a Staging
+        run: echo "Desplegando a staging..."
+
+  deploy-production:
+    name: Deploy to Production
+    needs: quality-gate
+    if: github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Deploy a Producción
+        run: echo "Desplegando a producción..."
